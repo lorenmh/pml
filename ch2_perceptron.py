@@ -13,7 +13,7 @@ class Perceptron(object):
         self.iterations = iterations
 
     ''' Δw = η(yⁱ - ŷⁱ)xⁱ
-        weight_delta = learning_rate(η) * (actual(y) - expected(ŷ)) * input(x)
+        weight_delta = learning_rate(η) * (actual(y) - predicted(ŷ)) * input(x)
     '''
     def weight_delta(self, input, output_delta):
         return self.learning_rate * output_delta * input
@@ -36,3 +36,20 @@ class Perceptron(object):
             num_features = len(input[0])
 
         self.weights = np.zeros(num_features + 1)
+
+        for _ in range(self.iterations):
+            # i is the current row count
+            # xi is xⁱ; the set of features for row i
+            for i, xi in enumerate(inputs):
+                actual = outputs[i]
+                predicted = predict(xi)
+
+                delta = self.learning_rate * (actual - predicted)
+
+                self.weights[0] += delta
+                self.weights[1:] += delta * xi
+
+    # if z >= 0, then activates to 1, else activates to -1
+    def predict(self, x):
+        np.dot(x, self.weights[1:]) + self.weights[0]
+        return 1 if z >= 0 else -1
