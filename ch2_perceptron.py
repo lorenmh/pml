@@ -33,23 +33,33 @@ class Perceptron(object):
         # if num_features is not defined, then just get the number of features
         # from the first input element
         if num_features == None:
-            num_features = len(input[0])
+            num_features = len(inputs[0])
 
         self.weights = np.zeros(num_features + 1)
 
+        c = 0
         for _ in range(self.iterations):
             # i is the current row count
             # xi is xⁱ; the set of features for row i
             for i, xi in enumerate(inputs):
                 actual = outputs[i]
-                predicted = predict(xi)
+                predicted = self.predict(xi)
 
                 delta = self.learning_rate * (actual - predicted)
+
+                g = False
+                if delta != 0:
+                    print 'NE %d' % c
+                    g = True
 
                 self.weights[0] += delta
                 self.weights[1:] += delta * xi
 
+                if g:
+                    print self.weights
+                c += 1
+
     # if z >= 0, then activates to 1, else activates to -1
     def predict(self, x):
-        np.dot(x, self.weights[1:]) + self.weights[0]
+        z = np.dot(x, self.weights[1:]) + self.weights[0]
         return 1 if z >= 0 else -1
